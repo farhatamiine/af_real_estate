@@ -1,61 +1,221 @@
-# NextBase Starter
+# Nextbase + Supabase Starter (Real-Estate MVP)
 
-![NextBase Lite Open Source Free Boilerplate](https://github.com/imbhargav5/nextbase-nextjs13-supabase-starter/blob/main/.github/litebanner.png?raw=true)
+Production-ready Next.js 15 + Supabase starter to build a real-estate app with role-based access (admin, manager, agent), listings, leads, geo/text search, and clean DX. Uses App Router, React 19, Tailwind v4, Radix UI, TanStack Query, and typed Server Actions.
 
-Nextbase Lite is a simple Next.js 13 + Supabase boilerplate. It includes a Next.js 13 app with Typescript, Supabase and Tailwind CSS. It includes the all new `app` folder, `layout` components, React `server components` and more!
+---
 
 ## Features
 
-- 🚀 Next.js 15
-- 💻 Data fetching examples in React server and client components. Suspenseful data fetching with minimal loading screens.
-- ⚛️ React query setup configured
-- 🔥 React Hot Toast component
-- 💻 Fully typed with Typescript. Includes automatic type generation for Supabase tables
-- 🎨 Tailwindcss
-- 🧪 Unit testing and integration testing setups built-in
-- 💚 Eslint, typescript, prettier, postcss configured for dev and test environments
-- 📈 Automatic sitemap generation
-- 🔍 SEO metadata, JSON-LD and Open Graph tags with NEXT SEO
-- ✍️ Semantic release with Automatic changelog generation
-- 🎨 Prettier Code formatter
-- 💎 Minimal styling
-- 📖 Codebase which is easy to read and modify
+* Next.js 15 (App Router, RSC, Server Actions)
+* Supabase Auth, DB, Storage
+* Role-based access (admin, manager, agent) via RLS
+* Properties, Listings, Media, Features, Leads, Appointments
+* Full-text search (tsvector) + geo search (PostGIS)
+* Typed DB (`supabase gen types`) and Zod forms with React Hook Form
+* SEO via `next-seo` and `next-sitemap`
+* Testing: Vitest (unit) + Playwright (e2e)
+* CI-ready release flow with `semantic-release`
 
-### Development
+---
 
-1. Clone the repo
-2. Install dependencies with `yarn`
-3. Create a Supabase account if you don't have one already
-4. Create a new project in Supabase
-5. Link Supabase to your project using `yarn supabase link --project-ref <project-ref>`. You can get your project ref from the Supabase Project dashboard (Project Settings -> API)
-6. Duplicate `.env.local.example` and rename it to `.env.local` and add the Project ref, Supabase URL and anon key.
-7. Push the database schema to your Supabase project using `yarn supabase db push`.
-8. Generate types for your Supabase tables using `yarn generate:types:local`.
-9. Run `yarn dev` to start the development server.
+## Tech stack
 
-### Testing
+* Runtime: Node 20+, PNPM 9
+* Framework: Next.js 15, React 19
+* UI: Tailwind CSS v4, Radix UI, Headless UI, Lucide Icons, Framer Motion
+* Data: Supabase JS v2, TanStack Query
+* Forms/Validation: React Hook Form, Zod
+* Lint/Format: ESLint, Prettier
+* Tests: Vitest, @testing-library/react, Playwright
 
-1. Unit test using `yarn test`
-2. End-to-end test using `yarn test:e2e`
+---
 
-### Deployment
+## Quick start
 
-This is a simple Next.js project. Deployment is the same as any other Next.js project. You can deploy it to Vercel, Netlify, or any other hosting provider.
+1. **Clone & install**
 
-### Contributing
+```bash
+pnpm install
+```
 
-Contributions are welcome. Please open an issue or a PR.
+2. **Create `.env.local`**
 
-### License
+```bash
+# Required
+NEXT_PUBLIC_SUPABASE_URL= https://xxxx.supabase.co
+NEXT_PUBLIC_SUPABASE_ANON_KEY= your_anon_key
 
-MIT
+# Server-only (optional but recommended where needed)
+SUPABASE_SERVICE_ROLE_KEY= your_service_role_key
 
-### Troubleshooting
+# Used by the types generation script
+SUPABASE_PROJECT_REF= xxxxxxxxxxxxxxxxxxxx
 
-Checkout the [TROUBLESHOOTING.md](./TROUBLESHOOTING.md) file for common issues.
+# SEO / Sitemap (optional)
+NEXT_PUBLIC_SITE_URL= http://localhost:3000
+```
 
-## Premium NextBase Boilerplate
+3. **Run dev**
 
-Also checkout our premium boilerplate with more features. It includes a fully functional authentication system, user profiles, organisations, row level security, and more.
+```bash
+pnpm dev
+```
 
-[![NextBase Boilerplate](https://github.com/imbhargav5/nextbase-nextjs13-supabase-starter/blob/main/.github/banner.png?raw=true)](https://usenextbase.com)
+Opens on [http://localhost:3000](http://localhost:3000) using Turbopack.
+
+---
+
+## Supabase setup
+
+1. Create a Supabase project.
+2. In Project Settings → API, copy the URL and keys into `.env.local`.
+3. (Optional) Install CLI and sign in:
+
+```bash
+pnpm dlx supabase login
+```
+
+4. Generate typed DB:
+
+```bash
+pnpm generate:types:local
+```
+
+This writes `src/lib/database.types.ts`.
+
+> If you plan to use geo/text search and the real-estate schema, enable extensions and run your SQL migrations in the Supabase SQL editor:
+
+* `postgis`, `pg_trgm`, `unaccent`
+* Tables: `profiles`, `agencies`, `agency_members`, `properties`, `listings`, `listing_media`, `listing_features`, `leads`, `appointments`, `saved_listings`
+* Triggers: `listings_tsv_trigger`
+* RLS policies for agency-scoped access
+
+---
+
+## Scripts
+
+Directly from `package.json`:
+
+* `dev` → run Next dev with Turbopack
+* `start` → run Next in production
+* `build` → build the app
+* `postbuild` → generate sitemap via `next-sitemap`
+* `generate:types:local` → emit typed DB from Supabase into `src/lib/database.types.ts`
+* `test` / `test:watch` → Vitest unit tests (root `src`)
+* `test:e2e` → Playwright e2e tests
+* `lint`, `lint:eslint`, `lint:prettier` → ESLint + Prettier
+* `tsc` → type-check
+
+---
+
+## Project structure (suggested)
+
+```
+src/
+  app/                 # App Router routes
+  components/          # UI building blocks
+  features/            # Feature slices (listings, leads, etc.)
+  lib/
+    database.types.ts  # Supabase generated types
+    supabase.ts        # Supabase client helpers (browser/server)
+    rls.ts             # helpers for role/agency checks (UI)
+  styles/              # Tailwind v4 entry CSS
+  tests/               # unit tests (vitest)
+  e2e/                 # playwright specs
+```
+
+---
+
+## Domain model (summary)
+
+* **Profiles** augment `auth.users` with `role: admin|manager|agent`.
+* **Agencies** group users.
+* **Properties** hold physical data and geo.
+* **Listings** hold market data (price, status, for\_sale/for\_rent) and search TSV.
+* **Media/Features** attach to listings.
+* **Leads** and **Appointments** cover CRM basics.
+
+> For a full Mermaid class diagram and SQL, see `/docs/model.md` or your schema file if you added one.
+
+---
+
+## Tailwind v4
+
+Tailwind 4 uses the new CSS entry style:
+
+```css
+@import "tailwindcss";
+```
+
+No heavy config needed. Utilities and plugins:
+
+* `@tailwindcss/forms`, `@tailwindcss/typography`
+* `tailwindcss-animate`, `tailwind-merge`
+
+---
+
+## Testing
+
+* **Unit**: Vitest + Testing Library
+
+```bash
+pnpm test
+```
+
+* **E2E**: Playwright
+
+```bash
+pnpm test:e2e
+```
+
+---
+
+## Linting & formatting
+
+```bash
+pnpm lint        # ESLint + Prettier
+pnpm lint:eslint # ESLint only
+pnpm lint:prettier
+```
+
+---
+
+## Releases (optional)
+
+Semantic-release is configured for the `main` branch.
+Use Conventional Commits (`feat:`, `fix:`, `chore:`, etc.).
+CI should provide:
+
+* `GITHUB_TOKEN` for GitHub releases
+* NPM publish is disabled (`npmPublish: false`)
+
+---
+
+## SEO & Sitemap
+
+* Configure default SEO with `next-seo`.
+* Sitemap is generated on `postbuild` using `next-sitemap.config.cjs`.
+  Set `NEXT_PUBLIC_SITE_URL` for correct absolute URLs.
+
+---
+
+## Notes for the Real-Estate MVP
+
+* Create a storage bucket `listing-media` and save paths as `listing-media/{listing_id}/...`.
+* Add an RPC `search_listings(...)` to combine text, filters, and radius search.
+* Enforce RLS so agents/managers only see their agency’s data.
+* Require at least one cover image before publishing a listing.
+
+---
+
+## Troubleshooting
+
+* Types not generated: ensure `SUPABASE_PROJECT_REF` and CLI login, then run `pnpm generate:types:local`.
+* 401/Forbidden: check RLS policies and that the user is a member of the agency.
+* Tailwind not applying: confirm the v4 CSS entry file is imported in your root layout.
+
+---
+
+## License
+
+MIT. 

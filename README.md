@@ -6,27 +6,27 @@ Production-ready Next.js 15 + Supabase starter to build a real-estate app with r
 
 ## Features
 
-* Next.js 15 (App Router, RSC, Server Actions)
-* Supabase Auth, DB, Storage
-* Role-based access (admin, manager, agent) via RLS
-* Properties, Listings, Media, Features, Leads, Appointments
-* Full-text search (tsvector) + geo search (PostGIS)
-* Typed DB (`supabase gen types`) and Zod forms with React Hook Form
-* SEO via `next-seo` and `next-sitemap`
-* Testing: Vitest (unit) + Playwright (e2e)
-* CI-ready release flow with `semantic-release`
+- Next.js 15 (App Router, RSC, Server Actions)
+- Supabase Auth, DB, Storage
+- Role-based access (admin, manager, agent) via RLS
+- Properties, Listings, Media, Features, Leads, Appointments
+- Full-text search (tsvector) + geo search (PostGIS)
+- Typed DB (`supabase gen types`) and Zod forms with React Hook Form
+- SEO via `next-seo` and `next-sitemap`
+- Testing: Vitest (unit) + Playwright (e2e)
+- CI-ready release flow with `semantic-release`
 
 ---
 
 ## Tech stack
 
-* Runtime: Node 20+, PNPM 9
-* Framework: Next.js 15, React 19
-* UI: Tailwind CSS v4, Radix UI, Headless UI, Lucide Icons, Framer Motion
-* Data: Supabase JS v2, TanStack Query
-* Forms/Validation: React Hook Form, Zod
-* Lint/Format: ESLint, Prettier
-* Tests: Vitest, @testing-library/react, Playwright
+- Runtime: Node 20+, PNPM 9
+- Framework: Next.js 15, React 19
+- UI: Tailwind CSS v4, Radix UI, Headless UI, Lucide Icons, Framer Motion
+- Data: Supabase JS v2, TanStack Query
+- Forms/Validation: React Hook Form, Zod
+- Lint/Format: ESLint, Prettier
+- Tests: Vitest, @testing-library/react, Playwright
 
 ---
 
@@ -85,10 +85,10 @@ This writes `src/lib/database.types.ts`.
 
 > If you plan to use geo/text search and the real-estate schema, enable extensions and run your SQL migrations in the Supabase SQL editor:
 
-* `postgis`, `pg_trgm`, `unaccent`
-* Tables: `profiles`, `agencies`, `agency_members`, `properties`, `listings`, `listing_media`, `listing_features`, `leads`, `appointments`, `saved_listings`
-* Triggers: `listings_tsv_trigger`
-* RLS policies for agency-scoped access
+- `postgis`, `pg_trgm`, `unaccent`
+- Tables: `profiles`, `agencies`, `agency_members`, `properties`, `listings`, `listing_media`, `listing_features`, `leads`, `appointments`, `saved_listings`
+- Triggers: `listings_tsv_trigger`
+- RLS policies for agency-scoped access
 
 ---
 
@@ -96,15 +96,15 @@ This writes `src/lib/database.types.ts`.
 
 Directly from `package.json`:
 
-* `dev` → run Next dev with Turbopack
-* `start` → run Next in production
-* `build` → build the app
-* `postbuild` → generate sitemap via `next-sitemap`
-* `generate:types:local` → emit typed DB from Supabase into `src/lib/database.types.ts`
-* `test` / `test:watch` → Vitest unit tests (root `src`)
-* `test:e2e` → Playwright e2e tests
-* `lint`, `lint:eslint`, `lint:prettier` → ESLint + Prettier
-* `tsc` → type-check
+- `dev` → run Next dev with Turbopack
+- `start` → run Next in production
+- `build` → build the app
+- `postbuild` → generate sitemap via `next-sitemap`
+- `generate:types:local` → emit typed DB from Supabase into `src/lib/database.types.ts`
+- `test` / `test:watch` → Vitest unit tests (root `src`)
+- `test:e2e` → Playwright e2e tests
+- `lint`, `lint:eslint`, `lint:prettier` → ESLint + Prettier
+- `tsc` → type-check
 
 ---
 
@@ -128,12 +128,12 @@ src/
 
 ## Domain model (summary)
 
-* **Profiles** augment `auth.users` with `role: admin|manager|agent`.
-* **Agencies** group users.
-* **Properties** hold physical data and geo.
-* **Listings** hold market data (price, status, for\_sale/for\_rent) and search TSV.
-* **Media/Features** attach to listings.
-* **Leads** and **Appointments** cover CRM basics.
+- **Profiles** augment `auth.users` with `role: admin|manager|agent`.
+- **Agencies** group users.
+- **Properties** hold physical data and geo.
+- **Listings** hold market data (price, status, for_sale/for_rent) and search TSV.
+- **Media/Features** attach to listings.
+- **Leads** and **Appointments** cover CRM basics.
 
 > For a full Mermaid class diagram and SQL, see `/docs/model.md` or your schema file if you added one.
 
@@ -144,25 +144,25 @@ src/
 Tailwind 4 uses the new CSS entry style:
 
 ```css
-@import "tailwindcss";
+@import 'tailwindcss';
 ```
 
 No heavy config needed. Utilities and plugins:
 
-* `@tailwindcss/forms`, `@tailwindcss/typography`
-* `tailwindcss-animate`, `tailwind-merge`
+- `@tailwindcss/forms`, `@tailwindcss/typography`
+- `tailwindcss-animate`, `tailwind-merge`
 
 ---
 
 ## Testing
 
-* **Unit**: Vitest + Testing Library
+- **Unit**: Vitest + Testing Library
 
 ```bash
 pnpm test
 ```
 
-* **E2E**: Playwright
+- **E2E**: Playwright
 
 ```bash
 pnpm test:e2e
@@ -186,36 +186,36 @@ Semantic-release is configured for the `main` branch.
 Use Conventional Commits (`feat:`, `fix:`, `chore:`, etc.).
 CI should provide:
 
-* `GITHUB_TOKEN` for GitHub releases
-* NPM publish is disabled (`npmPublish: false`)
+- `GITHUB_TOKEN` for GitHub releases
+- NPM publish is disabled (`npmPublish: false`)
 
 ---
 
 ## SEO & Sitemap
 
-* Configure default SEO with `next-seo`.
-* Sitemap is generated on `postbuild` using `next-sitemap.config.cjs`.
+- Configure default SEO with `next-seo`.
+- Sitemap is generated on `postbuild` using `next-sitemap.config.cjs`.
   Set `NEXT_PUBLIC_SITE_URL` for correct absolute URLs.
 
 ---
 
 ## Notes for the Real-Estate MVP
 
-* Create a storage bucket `listing-media` and save paths as `listing-media/{listing_id}/...`.
-* Add an RPC `search_listings(...)` to combine text, filters, and radius search.
-* Enforce RLS so agents/managers only see their agency’s data.
-* Require at least one cover image before publishing a listing.
+- Create a storage bucket `listing-media` and save paths as `listing-media/{listing_id}/...`.
+- Add an RPC `search_listings(...)` to combine text, filters, and radius search.
+- Enforce RLS so agents/managers only see their agency’s data.
+- Require at least one cover image before publishing a listing.
 
 ---
 
 ## Troubleshooting
 
-* Types not generated: ensure `SUPABASE_PROJECT_REF` and CLI login, then run `pnpm generate:types:local`.
-* 401/Forbidden: check RLS policies and that the user is a member of the agency.
-* Tailwind not applying: confirm the v4 CSS entry file is imported in your root layout.
+- Types not generated: ensure `SUPABASE_PROJECT_REF` and CLI login, then run `pnpm generate:types:local`.
+- 401/Forbidden: check RLS policies and that the user is a member of the agency.
+- Tailwind not applying: confirm the v4 CSS entry file is imported in your root layout.
 
 ---
 
 ## License
 
-MIT. 
+MIT.

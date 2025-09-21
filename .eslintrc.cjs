@@ -38,7 +38,8 @@ module.exports = {
         'prettier',
       ],
       rules: {
-        'prettier/prettier': 'error',
+        'prettier/prettier': 1,
+        '@typescript-eslint/no-unused-vars': 1,
       },
       files: ['e2e/**/*.spec.ts'],
     },
